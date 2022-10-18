@@ -6,7 +6,6 @@ class housing_assistance(Variable):
     entity = SPMUnit
     label = "Housing assistance"
     unit = USD
-    documentation = "Housing assistance"
     definition_period = YEAR
 
     def formula(spm_unit, period, parameters):

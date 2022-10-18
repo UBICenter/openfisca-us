@@ -23,7 +23,6 @@ class federal_eitc_without_age_minimum(Variable):
             "eitc_maximum",
             "eitc_phased_in",
             "eitc_reduction",
-            "earned_income_tax_credit",
             "eitc",
         ]
         for variable in EITC_VARIABLES:
