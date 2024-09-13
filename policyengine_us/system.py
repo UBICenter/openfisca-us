@@ -50,6 +50,8 @@ class CountryTaxBenefitSystem(TaxBenefitSystem):
         self.load_parameters(COUNTRY_DIR / "parameters")
         if reform:
             self.apply_reform_set(reform)
+        # Ignore any data modifications after this point- they're baseline.
+        self._data_modified = self.data_modified
         self.parameters = set_irs_uprating_parameter(self.parameters)
         self.parameters = homogenize_parameter_structures(
             self.parameters, self.variables
@@ -125,6 +127,10 @@ class Simulation(CoreSimulation):
             )
             weekly_hours.delete_arrays(known_period)
 
+        self.tax_benefit_system.data_modified = (
+            self.tax_benefit_system._data_modified
+        )
+
 
 class Microsimulation(CoreMicrosimulation):
     default_tax_benefit_system = CountryTaxBenefitSystem
@@ -183,6 +189,9 @@ class Microsimulation(CoreMicrosimulation):
             "self_employment_income_before_lsr",
             "weekly_hours_worked_before_lsr",
         ]
+        self.tax_benefit_system.data_modified = (
+            self.tax_benefit_system._data_modified
+        )
 
 
 class IndividualSim(CoreIndividualSim):  # Deprecated
