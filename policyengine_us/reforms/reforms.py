@@ -50,6 +50,9 @@ from .congress.romney.family_security_act_2024.eitc import (
 from .treasury.repeal_dependent_exemptions import (
     create_repeal_dependent_exemptions_reform,
 )
+from .states.mi import (
+    create_mi_food_assitance_credit_reform,
+)
 
 from policyengine_core.reforms import Reform
 import warnings
@@ -120,6 +123,9 @@ def create_structural_reforms_from_parameters(parameters, period):
     repeal_dependent_exemptions = create_repeal_dependent_exemptions_reform(
         parameters, period
     )
+    mi_food_assistance_credit = create_mi_food_assitance_credit_reform(
+        parameters, period
+    )
 
     reforms = [
         afa_reform,
@@ -146,6 +152,7 @@ def create_structural_reforms_from_parameters(parameters, period):
         family_security_act_2024_ctc,
         family_security_act_2024_eitc,
         repeal_dependent_exemptions,
+        mi_food_assistance_credit,
     ]
     reforms = tuple(filter(lambda x: x is not None, reforms))
 
