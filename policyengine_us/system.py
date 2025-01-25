@@ -13,7 +13,11 @@ from policyengine_us.variables.household.demographic.geographic.state.in_state i
     create_50_state_variables,
 )
 from policyengine_us.tools.parameters import backdate_parameters
-from policyengine_us.reforms import create_structural_reforms_from_parameters
+from policyengine_us.reforms import (
+    create_structural_reforms_from_parameters,
+    structural_reforms,
+)
+from policyengine_core.reforms import StructuralReform
 from policyengine_core.parameters.operations.homogenize_parameters import (
     homogenize_parameter_structures,
 )
@@ -87,12 +91,15 @@ class CountryTaxBenefitSystem(TaxBenefitSystem):
         self.parameters = propagate_parameter_metadata(self.parameters)
         add_default_uprating(self)
 
-        structural_reform = create_structural_reforms_from_parameters(
-            self.parameters, start_instant
-        )
-        if reform is None:
-            reform = ()
-        reform = (reform, structural_reform)
+        self.possible_structural_reforms: list[StructuralReform] = structural_reforms
+
+        # structural_reform = create_structural_reforms_from_parameters(
+        #     self.parameters, start_instant
+        # )
+        create_structural_reforms_from_parameters(self.parameters, self)
+        # if reform is None:
+        #     reform = ()
+        # reform = (reform, structural_reform)
 
         self.parameters = backdate_parameters(
             self.parameters, first_instant="2015-01-01"
@@ -105,7 +112,6 @@ class CountryTaxBenefitSystem(TaxBenefitSystem):
             self.apply_reform_set(reform)
 
         self.add_variables(*create_50_state_variables())
-
 
 system = CountryTaxBenefitSystem()
 
@@ -134,16 +140,16 @@ class Simulation(CoreSimulation):
     datasets = DATASETS
 
     def __init__(self, *args, **kwargs):
-        start_instant: Annotated[str, "ISO date format YYYY-MM-DD"] = (
-            kwargs.pop("start_instant", DEFAULT_START_DATE)
-        )
         super().__init__(*args, **kwargs)
 
-        reform = create_structural_reforms_from_parameters(
-            self.tax_benefit_system.parameters, start_instant
+        # reform = create_structural_reforms_from_parameters(
+        #     self.tax_benefit_system.parameters, start_instant
+        # )
+        # if reform is not None:
+        #     self.apply_reform(reform)
+        create_structural_reforms_from_parameters(
+            self.tax_benefit_system.parameters, self.tax_benefit_system
         )
-        if reform is not None:
-            self.apply_reform(reform)
 
         # Labor supply responses
 
@@ -206,16 +212,17 @@ class Microsimulation(CoreMicrosimulation):
     datasets = DATASETS
 
     def __init__(self, *args, **kwargs):
-        start_instant: Annotated[str, "ISO date format YYYY-MM-DD"] = (
-            kwargs.pop("start_instant", DEFAULT_START_DATE)
-        )
         super().__init__(*args, **kwargs)
 
-        reform = create_structural_reforms_from_parameters(
-            self.tax_benefit_system.parameters, start_instant
+        # reform = create_structural_reforms_from_parameters(
+        #     self.tax_benefit_system.parameters, start_instant
+        # )
+        # if reform is not None:
+        #     self.apply_reform(reform)
+
+        create_structural_reforms_from_parameters(
+            self.tax_benefit_system.parameters, self.tax_benefit_system
         )
-        if reform is not None:
-            self.apply_reform(reform)
 
         # Labor supply responses
 
