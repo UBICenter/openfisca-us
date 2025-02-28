@@ -1,0 +1,4 @@
+- bump: minor
+  changes:
+    fixed:
+      - Fixed incorrect SSI spousal deeming calculation by adding the FBR differential threshold check required by SSI regulations §416.1163(d)(1). The deeming now only occurs when the ineligible spouse's income exceeds the difference between couple and individual Federal Benefit Rates, implementing the exact regulatory requirement and fixing the test failures for cases with spouse income below the threshold.
